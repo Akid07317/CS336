@@ -1,0 +1,31 @@
+{
+  "offering": "Spring 2026",
+  "retrieved": "2026-11-01",
+  "sources": [
+    {
+      "directory": "assignments/assignment1-basics",
+      "url": "https://github.com/stanford-cs336/assignment1-basics",
+      "commit": "a158843b20107949f1a8d7df1b05cd33b9166712"
+    },
+    {
+      "directory": "assignments/assignment2-systems",
+      "url": "https://github.com/stanford-cs336/assignment2-systems",
+      "commit": "ca8bc81a59b70516f7ebb2da4808daade877c736"
+    },
+    {
+      "directory": "assignments/assignment3-scaling",
+      "url": "https://github.com/stanford-cs336/assignment3-scaling",
+      "commit": "03e9372992e913061b9e78b5cfcb62ad8a87de35"
+    },
+    {
+      "directory": "assignments/assignment4-data",
+      "url": "https://github.com/stanford-cs336/assignment4-data",
+      "commit": "0555bea66369872d912652debf10b115ca0688c8"
+    },
+    {
+      "directory": "assignments/assignment5-alignment",
+      "url": "https://github.com/stanford-cs336/assignment5-alignment",
+      "commit": "c2734a26308710949fe13226960a1e8cece94b7e"
+    }
+  ]
+}

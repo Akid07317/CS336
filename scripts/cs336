@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -euo pipefail
+CS336_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export UV_CACHE_DIR="${UV_CACHE_DIR:-$CS336_ROOT/.cache/uv}"
+export UV_PYTHON_INSTALL_DIR="${UV_PYTHON_INSTALL_DIR:-$CS336_ROOT/.local/python}"
+export HF_HOME="${HF_HOME:-$CS336_ROOT/.cache/huggingface}"
+export TORCH_HOME="${TORCH_HOME:-$CS336_ROOT/.cache/torch}"
+export MPLCONFIGDIR="${MPLCONFIGDIR:-$CS336_ROOT/.cache/matplotlib}"
+export WANDB_MODE="${WANDB_MODE:-offline}"
+export RUST_LOG="${RUST_LOG:-error}"
+if [[ "$(uname -s)" == Darwin && -z "${DEVELOPER_DIR:-}" && -d /Library/Developer/CommandLineTools ]]; then
+    export DEVELOPER_DIR=/Library/Developer/CommandLineTools
+fi
+
+usage() {
+    cat <<'TXT'
+Usage: ./scripts/cs336 COMMAND a1|a2|a3|a4|a5 [arguments]
+  sync       Install the committed environment (Python 3.12).
+  run        Run a command from the assignment directory.
+  doctor     Check imports and tensor forward/backward operations.
+  collect    Collect official tests without running assignment solutions.
+  test       Run official tests; unimplemented adapters will fail.
+  fixtures   Restore ignored official data/model fixtures, with SHA256 checks.
+Examples:
+  ./scripts/cs336 sync a1
+  ./scripts/cs336 doctor a1 --device cpu
+  ./scripts/cs336 doctor a1 --device mps
+  ./scripts/cs336 doctor a2 --device cuda --compile
+  ./scripts/cs336 test a1 tests/test_nn.py -q
+  ./scripts/cs336 run a1 python my_script.py
+TXT
+}
+if [[ $# -lt 2 ]]; then usage; exit 2; fi
+action="$1"; assignment="$2"; shift 2
+case "$assignment" in
+    a1) folder=assignment1-basics ;;
+    a2) folder=assignment2-systems ;;
+    a3) folder=assignment3-scaling ;;
+    a4) folder=assignment4-data ;;
+    a5) folder=assignment5-alignment ;;
+    *) usage; exit 2 ;;
+esac
+env_dir="$CS336_ROOT/environments/$assignment"
+work_dir="$CS336_ROOT/assignments/$folder"
+command -v uv >/dev/null || { echo 'Install uv first: https://docs.astral.sh/uv/getting-started/installation/' >&2; exit 1; }
+cd "$work_dir"
+case "$action" in
+    sync) exec uv sync --project "$env_dir" --locked --python 3.12 "$@" ;;
+    run) exec uv run --project "$env_dir" --locked "$@" ;;
+    doctor) exec uv run --project "$env_dir" --locked python "$CS336_ROOT/scripts/doctor.py" --assignment "$assignment" "$@" ;;
+    collect) exec uv run --project "$env_dir" --locked python -m pytest --collect-only -q tests "$@" ;;
+    test) exec uv run --project "$env_dir" --locked python -m pytest "$@" ;;
+    fixtures) exec uv run --project "$env_dir" --locked python "$CS336_ROOT/scripts/fetch-assets.py" "$assignment" "$@" ;;
+    *) usage; exit 2 ;;
+esac

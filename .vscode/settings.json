@@ -1,0 +1,15 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/environments/a1/.venv/bin/python",
+  "python.testing.pytestEnabled": false,
+  "files.watcherExclude": {
+    "**/.cache/**": true,
+    "**/.local/**": true,
+    "**/.venv/**": true,
+    "**/data/**": true
+  },
+  "search.exclude": {
+    "**/.cache": true,
+    "**/.local": true,
+    "**/.venv": true
+  }
+}
