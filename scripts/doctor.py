@@ -24,8 +24,15 @@ def main():
     parser.add_argument("--compile", action="store_true", help="Validate CUDA TorchInductor/Triton")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    if sys.version_info[:2] != (3, 12):
-        raise RuntimeError("Expected Python 3.12")
+    if sys.platform == "win32":
+        if args.assignment != "a1":
+            raise RuntimeError("Only A1 is configured for native Windows")
+        if sys.version_info[:2] != (3, 13):
+            raise RuntimeError("Expected Python 3.13 on Windows")
+    elif sys.version_info[:2] != (3, 12):
+        raise RuntimeError("Legacy Linux/Mac environments expect Python 3.12")
+    folder = {"a1": "assignment1-basics", "a2": "assignment2-systems", "a3": "assignment3-scaling", "a4": "assignment4-data", "a5": "assignment5-alignment"}[args.assignment]
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "assignments" / folder))
     report = {
         "checked_at": datetime.now(timezone.utc).isoformat(),
         "assignment": args.assignment,

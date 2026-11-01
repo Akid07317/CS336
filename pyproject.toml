@@ -1,0 +1,24 @@
+[project]
+name = "cs336-windows-study"
+version = "0.1.0"
+description = "Local Windows CUDA environment for CS336 A1"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+  "torch==2.10.0+cu130", "numpy==2.3.5", "einops==0.8.2",
+  "jaxtyping==0.3.11", "regex==2026.9.29", "tiktoken==0.14.0",
+  "psutil==7.2.2", "pytest==9.2.0", "pytest-timeout==2.4.0",
+  "einx>=0.4", "tqdm>=4.67", "wandb>=0.25", "ty>=0.0.26",
+  "ruff>=0.15.8", "ipykernel>=6.29", "uv==0.13.6",
+]
+
+[tool.uv]
+package = false
+environments = ["sys_platform == 'win32' and platform_machine == 'AMD64'"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu130" }
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
